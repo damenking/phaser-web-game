@@ -63,17 +63,31 @@ class Game extends Phaser.Scene {
     this.stars = this.physics.add.group({
       key: 'star',
       repeat: 11,
-      setXY: { x: 12, y: 0, stepX: 70 }
+      setXY: { x: 12, y: 0, stepX: 70 },
     });
 
     this.stars.children.iterate(function (child) {
 
       //  Give each star a slightly different bounce
-      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+      child.setBounceY(1);
+      child.setBounceX(1);
+      child.setCollideWorldBounds(true);
+      child.setVelocity(200);
 
     });
 
-    this.bombs = this.physics.add.group();
+    this.bombs = this.physics.add.group({
+      key: 'bomb',
+      repeat: 1,
+      setXY: { x: 12, y: 0, stepX: 70 },
+    });
+    this.bombs.children.iterate(child => {
+      child.setBounceY(1);
+      child.setBounceX(1);
+      
+      child.setCollideWorldBounds(true);
+      child.setVelocity(300);
+    })
 
     //  The score
     this.scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
@@ -102,15 +116,19 @@ class Game extends Phaser.Scene {
       this.player.setVelocityX(160);
 
       this.player.anims.play('right', true);
+    } else if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-160);
+    } else if (this.cursors.down.isDown) {
+      this.player.setVelocityY(160);
     } else {
       this.player.setVelocityX(0);
-
+      this.player.setVelocityY(0);
       this.player.anims.play('turn');
     }
 
-    if (this.cursors.up.isDown && this.player.body.touching.down) {
-      this.player.setVelocityY(-330);
-    }
+    // if (this.cursors.up.isDown && this.player.body.touching.down) {
+    //   this.player.setVelocityY(-330);
+    // }
   }
 
   collectStar (player, star) {
@@ -127,15 +145,6 @@ class Game extends Phaser.Scene {
         child.enableBody(true, child.x, 0, true, true);
 
       });
-
-      var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-      var bomb = this.bombs.create(x, 16, 'bomb');
-      bomb.setBounce(1);
-      bomb.setCollideWorldBounds(true);
-      bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-      bomb.allowGravity = false;
-
     }
   }
 
