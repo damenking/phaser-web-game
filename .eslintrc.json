@@ -1,0 +1,10 @@
+{
+  "parser": "babel-eslint",
+  "plugins": ["prettier"],
+  "rules": {
+    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "brace-style": "error",
+    "no-unused-vars": "error"
+  },
+  "extends": ["prettier", "prettier/standard"]
+}
