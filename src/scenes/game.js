@@ -8,7 +8,7 @@ class Game extends Phaser.Scene {
     this.stars;
     this.bombs;
     this.platforms;
-    this.cursors;
+    this.keys;
     this.score = 0;
     this.gameOver = false;
     this.scoreText;
@@ -52,17 +52,16 @@ class Game extends Phaser.Scene {
     this.platforms.create(600, 400, 'ground');
     this.platforms.create(50, 250, 'ground'); 
     this.platforms.create(750, 220, 'ground');
-    this.player = new Player(this.physics.add.sprite(100, 450, 'dude'));
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.physics.add.collider(this.player.sprite, this.platforms);
+    this.player = new Player(this.physics.add.sprite(36, 36, 'dude'));
+    // this.physics.add.collider(this.player.sprite, this.platforms);
+    this.keys = this.input.keyboard.addKeys('W,S,A,D');
   }
 
   update () {
     if (this.gameOver) {
       return;
     }
-    this.player.move(this.cursors);
-
+    this.player.move(this.keys);
   }
 }
 
