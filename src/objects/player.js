@@ -1,22 +1,22 @@
 const MOVEMENTS = {
   right: {
     axis: 'x',
-    increasePixals: true,
+    increasePixels: true,
     animation: 'playerRight',
   },
   left: {
     axis: 'x',
-    increasePixals: false,
+    increasePixels: false,
     animation: 'playerLeft',
   },
   up: {
     axis: 'y',
-    increasePixals: false,
+    increasePixels: false,
     animation: 'playerUp',
   },
   down: {
     axis: 'y',
-    increasePixals: true,
+    increasePixels: true,
     animation: 'playerDown',
   },
 };
@@ -85,14 +85,14 @@ class Player {
     this.inMotion = inMotion;
   }
 
-  movePlayer ({ axis, increasePixals, animation }) {
+  movePlayer ({ axis, increasePixels, animation }) {
     if (!this.inMotion) {
       this.sprite.play(animation);
       const step = axis === 'x' ? this.xStep : this.yStep;
-      const newPixalValue = increasePixals ? this.sprite[axis] + step : this.sprite[axis] - step;
+      const newPixelValue = increasePixels ? this.sprite[axis] + step : this.sprite[axis] - step;
       this.tweenManager.add({
         targets: this.sprite,
-        [axis]: newPixalValue,
+        [axis]: newPixelValue,
         duration: 500,
         onStart: () => this.setInMotion(true),
         onComplete: () => this.setInMotion(false),
