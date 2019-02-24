@@ -15,6 +15,7 @@ class Game extends Phaser.Scene {
   }
 
   preload () {
+    this.load.image('tile', 'assets/gridSquare.png')
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
@@ -26,9 +27,38 @@ class Game extends Phaser.Scene {
     this.platforms = this.physics.add.staticGroup(); 
   }
 
+  createGrid (numX, numY) {
+    const game = this.sys.game;
+    const tileWidth = game.textures.get('tile').source[0].width;
+    const tileHeight = game.textures.get('tile').source[0].height;
+    const tileSpriteWidth = numX * tileWidth;
+    const tileSpriteHeight = numY * tileHeight;
+    console.log(tileSpriteWidth);
+    console.log(tileSpriteHeight);
+    const scaleX = 1 / ((numX * tileWidth) / game.canvas.width);
+    const scaleY = 1 / ((numY * tileHeight) / game.canvas.height)
+    console.log(scaleX)
+    console.log(scaleY)
+    let tileSprite = this.add.tileSprite((tileSpriteWidth / 2) * scaleX,
+      (tileSpriteHeight / 2) * scaleY,
+      tileSpriteWidth,
+      tileSpriteHeight,
+      'tile')
+    
+    tileSprite.scaleX = scaleX;
+    tileSprite.scaleY = scaleY;
+  }
+
   create () { 
-    this.add.image(400, 300, 'sky');
-    this.createPlatforms()
+
+    this.createGrid(26, 20);
+
+    //  A simple background for our game
+    //this.add.image(400, 300, 'sky');
+    //  The platforms group contains the ground and the 2 ledges we can jump on
+    this.platforms = this.physics.add.staticGroup(); 
+    //  Here we create the ground.
+    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
     this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
     this.platforms.create(600, 400, 'ground');
     this.platforms.create(50, 250, 'ground'); 
