@@ -1,6 +1,6 @@
 import 'phaser';
-// import Location from '../objects/location';
 import Player from '../objects/player';
+
 class Game extends Phaser.Scene {
   constructor () {
     super();

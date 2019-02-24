@@ -64,16 +64,16 @@ class Player {
     // Listeners
     const keyboard = this.sprite.scene.input.keyboard;
     keyboard.on('keydown_D', () => {
-      this.movePlayer({ ...MOVEMENTS.right });
+      this.movePlayer(MOVEMENTS.right);
     });
     keyboard.on('keydown_A', () => {
-      this.movePlayer({ ...MOVEMENTS.left });
+      this.movePlayer(MOVEMENTS.left);
     });
     keyboard.on('keydown_W', () => {
-      this.movePlayer({ ...MOVEMENTS.up });
+      this.movePlayer(MOVEMENTS.up);
     });
     keyboard.on('keydown_S', () => {
-      this.movePlayer({ ...MOVEMENTS.down });
+      this.movePlayer(MOVEMENTS.down);
     });
   }
 
@@ -103,13 +103,13 @@ class Player {
   continueMovement (keys) {
     if (!this.inMotion){
       if (keys.D.isDown) {
-        this.movePlayer({ ...MOVEMENTS.right });
+        this.movePlayer(MOVEMENTS.right);
       } else if (keys.A.isDown) {
-        this.movePlayer({ ...MOVEMENTS.left });
+        this.movePlayer(MOVEMENTS.left);
       } else if (keys.S.isDown) {
-        this.movePlayer({ ...MOVEMENTS.down });
+        this.movePlayer(MOVEMENTS.down);
       } else if (keys.W.isDown) {
-        this.movePlayer({ ...MOVEMENTS.up });
+        this.movePlayer(MOVEMENTS.up);
       }
     }
   }
