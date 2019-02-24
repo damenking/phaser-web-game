@@ -8,12 +8,12 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      debug: false
-    }
+      debug: false,
+    },
   },
   scene: [
     Game,
-  ]
+  ],
 };
 
 const game = new Phaser.Game(config); // eslint-disable-line no-unused-vars

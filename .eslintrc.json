@@ -4,7 +4,9 @@
   "rules": {
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "brace-style": "error",
-    "no-unused-vars": "error"
+    "no-unused-vars": "error",
+    "semi": ["error", "always"],
+    "comma-dangle": ["error", "always-multiline"]
   },
   "extends": ["prettier", "prettier/standard"]
 }

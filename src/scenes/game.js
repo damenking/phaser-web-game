@@ -5,17 +5,12 @@ class Game extends Phaser.Scene {
   constructor () {
     super();
     this.player;
-    this.stars;
-    this.bombs;
     this.platforms;
     this.keys;
-    this.score = 0;
-    this.gameOver = false;
-    this.scoreText;
   }
 
   preload () {
-    this.load.image('tile', 'assets/gridSquare.png')
+    this.load.image('tile', 'assets/gridSquare.png');
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
     this.load.image('star', 'assets/star.png');
@@ -32,15 +27,18 @@ class Game extends Phaser.Scene {
     console.log(tileSpriteWidth);
     console.log(tileSpriteHeight);
     const scaleX = 1 / ((numX * tileWidth) / game.canvas.width);
-    const scaleY = 1 / ((numY * tileHeight) / game.canvas.height)
-    console.log(scaleX)
-    console.log(scaleY)
-    let tileSprite = this.add.tileSprite((tileSpriteWidth / 2) * scaleX,
+    const scaleY = 1 / ((numY * tileHeight) / game.canvas.height);
+    console.log(scaleX);
+    console.log(scaleY);
+    let tileSprite = this.add.tileSprite(
+      (tileSpriteWidth / 2) * scaleX,
       (tileSpriteHeight / 2) * scaleY,
       tileSpriteWidth,
       tileSpriteHeight,
-      'tile')
-    
+      'tile',
+    );
+    this.xStep = tileWidth * scaleX;
+    this.yStep = tileHeight * scaleY;
     tileSprite.scaleX = scaleX;
     tileSprite.scaleY = scaleY;
   }
@@ -52,8 +50,7 @@ class Game extends Phaser.Scene {
     this.platforms.create(600, 400, 'ground');
     this.platforms.create(50, 250, 'ground'); 
     this.platforms.create(750, 220, 'ground');
-    this.player = new Player(this.physics.add.sprite(36, 36, 'dude'));
-    // this.physics.add.collider(this.player.sprite, this.platforms);
+    this.player = new Player(this.add.sprite(30, 30, 'dude'), this.xStep, this.yStep);
     this.keys = this.input.keyboard.addKeys('W,S,A,D');
   }
 
@@ -61,7 +58,7 @@ class Game extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
-    this.player.move(this.keys);
+    this.player.continueMovement(this.keys);
   }
 }
 

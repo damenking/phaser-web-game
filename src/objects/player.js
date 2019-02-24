@@ -1,56 +1,116 @@
-// import AnimationManager from 'phaser';
+const MOVEMENTS = {
+  right: {
+    axis: 'x',
+    increasePixals: true,
+    animation: 'playerRight',
+  },
+  left: {
+    axis: 'x',
+    increasePixals: false,
+    animation: 'playerLeft',
+  },
+  up: {
+    axis: 'y',
+    increasePixals: false,
+    animation: 'playerUp',
+  },
+  down: {
+    axis: 'y',
+    increasePixals: true,
+    animation: 'playerDown',
+  },
+};
 
 class Player {
-  constructor (sprite) {
-    // Phaser.Physics.Arcade.Sprite
+  constructor (sprite, xStep, yStep) {
     this.sprite = sprite;
-    this.nextX = sprite.body.x + 100;
-    this.lastX = sprite.body.x - 100;
+    this.tweenManager = sprite.scene.tweens;
+    this.xStep = xStep;
+    this.yStep = yStep;
+    this.inMotion = false;
     this.initialize();
   }
 
   initialize () {
-    // Physics
-    this.sprite.setCollideWorldBounds(true);
-
     // Animations
     const animation = this.sprite.anims.animationManager;
     animation.create({
-      key: 'left',
+      key: 'playerLeft',
       frames: animation.generateFrameNumbers('dude', { start: 0, end: 3 }),
       frameRate: 10,
-      repeat: -1
+      repeat: -1,
     });
     animation.create({
-      key: 'turn',
+      key: 'playerTurn',
       frames: [ { key: 'dude', frame: 4 } ],
-      frameRate: 20
+      frameRate: 20,
     });
     animation.create({
-      key: 'right',
+      key: 'playerRight',
       frames: animation.generateFrameNumbers('dude', { start: 5, end: 8 }),
       frameRate: 10,
-      repeat: -1
+      repeat: -1,
     });
-    
-    // Controls
+    animation.create({
+      key: 'playerDown',
+      frames: [ { key: 'dude', frame: 4 } ],
+      frameRate: 20,
+    });
+    animation.create({
+      key: 'playerUp',
+      frames: [ { key: 'dude', frame: 5 } ],
+      frameRate: 20,
+    });
+    // Listeners
     const keyboard = this.sprite.scene.input.keyboard;
     keyboard.on('keydown_D', () => {
-      this.sprite.setVelocity(160, 0);
-      this.sprite.anims.play('right', true);
+      this.movePlayer({ ...MOVEMENTS.right });
     });
     keyboard.on('keydown_A', () => {
-      this.sprite.setVelocity(-160, 0);
-      this.sprite.anims.play('left', true);
-    })
+      this.movePlayer({ ...MOVEMENTS.left });
+    });
+    keyboard.on('keydown_W', () => {
+      this.movePlayer({ ...MOVEMENTS.up });
+    });
+    keyboard.on('keydown_S', () => {
+      this.movePlayer({ ...MOVEMENTS.down });
+    });
   }
 
-  move (keys) {
-    if (this.sprite.body.x > this.nextX || this.sprite.body.x < this.lastX) {
-      this.sprite.setVelocity(0, 0);
-      this.sprite.anims.play('turn');
-      this.lastX = this.sprite.body.x - 100;
-      this.nextX = this.sprite.body.x + 100;
+  setInMotion (inMotion) {
+    const { W, A, S, D } = this.sprite.scene.keys;
+    if (!inMotion && !(W.isDown || A.isDown || S.isDown || D.isDown)) {
+      this.sprite.play('playerTurn');
+    }
+    this.inMotion = inMotion;
+  }
+
+  movePlayer ({ axis, increasePixals, animation }) {
+    if (!this.inMotion) {
+      this.sprite.play(animation);
+      const step = axis === 'x' ? this.xStep : this.yStep;
+      const newPixalValue = increasePixals ? this.sprite[axis] + step : this.sprite[axis] - step;
+      this.tweenManager.add({
+        targets: this.sprite,
+        [axis]: newPixalValue,
+        duration: 500,
+        onStart: () => this.setInMotion(true),
+        onComplete: () => this.setInMotion(false),
+      });
+    }
+  }
+
+  continueMovement (keys) {
+    if (!this.inMotion){
+      if (keys.D.isDown) {
+        this.movePlayer({ ...MOVEMENTS.right });
+      } else if (keys.A.isDown) {
+        this.movePlayer({ ...MOVEMENTS.left });
+      } else if (keys.S.isDown) {
+        this.movePlayer({ ...MOVEMENTS.down });
+      } else if (keys.W.isDown) {
+        this.movePlayer({ ...MOVEMENTS.up });
+      }
     }
   }
 }
