@@ -1,21 +1,19 @@
 import 'phaser';
+import { tileDimensions, gameScale } from '../constants';
 import Player from '../objects/player';
 
 class Game extends Phaser.Scene {
   constructor () {
     super();
     this.player;
-    this.platforms;
     this.keys;
   }
 
   preload () {
     this.load.image('tile', 'assets/gridSquare.png');
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png'); 
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 40 });
+    this.load.image('first_tileset', 'assets/tilesets/first_tileset.png');
+    this.load.tilemapTiledJSON("first_map", "../assets/maps/first_map.json");
   }
 
   createGrid (numX, numY) {
@@ -35,25 +33,31 @@ class Game extends Phaser.Scene {
       tileSpriteHeight,
       'tile',
     );
-    this.xStep = tileWidth * scaleX;
-    this.yStep = tileHeight * scaleY;
     tileSprite.scaleX = scaleX;
     tileSprite.scaleY = scaleY;
   }
 
-  create () { 
-    this.createGrid(13, 10);
-    this.platforms = this.physics.add.staticGroup(); 
-    const playerStartX = this.xStep / 2;
-    const playerStartY = this.yStep / 2;
-    this.player = new Player(this.add.sprite(playerStartX, playerStartY, 'dude'), this.xStep, this.yStep);
+  create () {
+    // zoom camera in to effectively set scale of tiles
+    this.cameras.main.zoom = gameScale;
+    const map = this.make.tilemap({ key: 'first_map' });
+    const tileset = map.addTilesetImage("first_tileset", "first_tileset");
+    const simpleLayer = map.createStaticLayer("layer_1", tileset, 0, 0); // eslint-disable-line no-unused-vars
+    // Start player in the specified tile on the map (in this case the center) and set their step distance to the length of a tile
+    const startingTileX = 16;
+    const startingTileY = 12;
+    const playerStartX = (startingTileX * tileDimensions.tilePixalCount) - (tileDimensions.tilePixalCount / 2);
+    const playerStartY = (startingTileY * tileDimensions.tilePixalCount) - (tileDimensions.tilePixalCount / 2);
+    this.player = new Player(this.add.sprite(playerStartX, playerStartY, 'dude'), tileDimensions.tilePixalCount, tileDimensions.tilePixalCount);
+    // Scale sprite to whatever looks best
+    this.player.sprite.setScale(0.65);
+
+    this.cameras.main.startFollow(this.player.sprite);
+
     this.keys = this.input.keyboard.addKeys('W,S,A,D');
   }
 
   update () {
-    if (this.gameOver) {
-      return;
-    }
     this.player.continueMovement(this.keys);
   }
 }

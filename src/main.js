@@ -1,10 +1,13 @@
 import 'phaser';
+import { tileDimensions, gameScale } from './constants';
 import Game from './scenes/game';
+
+
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: tileDimensions.viewportTileCountX * tileDimensions.tilePixalCount * gameScale,
+  height: tileDimensions.viewportTileCountY * tileDimensions.tilePixalCount * gameScale,
   physics: {
     default: 'arcade',
     arcade: {
