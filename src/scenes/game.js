@@ -10,10 +10,11 @@ class Game extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('tile', 'assets/gridSquare.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 40 });
+    this.load.spritesheet('dude', 'assets/sprites/dude.png', { frameWidth: 32, frameHeight: 40 });
     this.load.image('first_tileset', 'assets/tilesets/first_tileset.png');
-    this.load.tilemapTiledJSON("first_map", "../assets/maps/first_map.json");
+    this.load.image('tileHighlight', 'assets/sprites/tileHighlight.png');
+    this.load.image('tileHighlight2', 'assets/sprites/tileHighlight2.png');
+    this.load.tilemapTiledJSON("first_map", "assets/maps/first_map.json");
   }
 
   createGrid (numX, numY) {
@@ -42,7 +43,20 @@ class Game extends Phaser.Scene {
     this.cameras.main.zoom = gameScale;
     const map = this.make.tilemap({ key: 'first_map' });
     const tileset = map.addTilesetImage("first_tileset", "first_tileset");
-    const simpleLayer = map.createStaticLayer("layer_1", tileset, 0, 0); // eslint-disable-line no-unused-vars
+    const simpleLayer = map.createStaticLayer("TerrainLayer", tileset, 0, 0); // eslint-disable-line no-unused-vars
+
+    const utilityLayer = map.createFromObjects("UtilityLayer", 'utility_tile', { key: 'tileHighlight2', alpha: 0 });
+    utilityLayer.forEach((sprite) => {
+      sprite.setInteractive();
+      sprite.renderFlags = 15;
+      sprite.on('pointerover', () => {
+        sprite.setAlpha(1);
+      });
+      sprite.on('pointerout', () => {
+        sprite.setAlpha(0);
+        sprite.renderFlags = 15;
+      });
+    });
     // Start player in the specified tile on the map (in this case the center) and set their step distance to the length of a tile
     const startingTileX = 16;
     const startingTileY = 12;
