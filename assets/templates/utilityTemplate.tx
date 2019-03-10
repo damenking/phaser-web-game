@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object width="32" height="32">
+  <properties>
+   <property name="customProp1" type="bool" value="false"/>
+   <property name="customProp2" value="asdf"/>
+  </properties>
+ </object>
+</template>
