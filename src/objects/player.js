@@ -85,6 +85,13 @@ class Player {
     this.inMotion = inMotion;
   }
 
+  completeMove () {
+    const xTile = (this.sprite.x + 16) / 32;
+    const yTile = (this.sprite.y + 16) / 32;
+    this.sprite.scene.events.emit(`playerOn${xTile}X${yTile}Y`);
+    this.setInMotion(false);
+  }
+
   movePlayer ({ axis, increasePixels, animation }) {
     if (!this.inMotion) {
       this.sprite.play(animation);
@@ -95,7 +102,7 @@ class Player {
         [axis]: newPixelValue,
         duration: 500,
         onStart: () => this.setInMotion(true),
-        onComplete: () => this.setInMotion(false),
+        onComplete: () => this.completeMove(),
       });
     }
   }
